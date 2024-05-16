@@ -3,7 +3,7 @@
 # Parâmetros de configuração
 VMID=101
 VMNAME="ubuntu-server"
-ISO_URL="https://releases.ubuntu.com/20.04/ubuntu-20.04.5-live-server-amd64.iso"
+ISO_URL="https://releases.ubuntu.com/24.04/ubuntu-24.04-live-server-amd64.iso"
 STORAGE="local-lvm"
 MEMORY=2048
 CORES=2
