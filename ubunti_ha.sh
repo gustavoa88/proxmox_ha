@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Parâmetros de configuração
-VMID=100
+VMID=101
 VMNAME="ubuntu-server"
-ISO_URL="http://cdimage.ubuntu.com/ubuntu-server/daily-live/current/focal-live-server-amd64.iso"
+ISO_URL="https://releases.ubuntu.com/20.04/ubuntu-20.04.5-live-server-amd64.iso"
 STORAGE="local-lvm"
 MEMORY=2048
 CORES=2
@@ -16,15 +16,16 @@ wget -O /var/lib/vz/template/iso/ubuntu-server.iso $ISO_URL
 qm create $VMID --name $VMNAME --memory $MEMORY --cores $CORES --net0 virtio,bridge=vmbr0
 qm importdisk $VMID /var/lib/vz/template/iso/ubuntu-server.iso $STORAGE
 qm set $VMID --scsihw virtio-scsi-pci --scsi0 $STORAGE:vm-$VMID-disk-0 --boot c --bootdisk scsi0
-qm set $VMID --ide2 $STORAGE:iso/ubuntu-server.iso,media=cdrom
+qm set $VMID --ide2 local:iso/ubuntu-server.iso,media=cdrom
 qm set $VMID --serial0 socket --vga serial0
 
 # Iniciar instalação do Ubuntu Server
 qm start $VMID
 
-# Esperar a instalação manual do Ubuntu Server (precisa de intervenção para instalação do OS)
+# Instrução para o usuário completar a instalação manualmente
+echo "Complete a instalação manual do Ubuntu Server. Depois de concluir, execute o script de instalação do Home Assistant manualmente."
 
-# Instalação automática do Home Assistant no Ubuntu Server (executar após instalação do OS)
+# Script de instalação do Home Assistant para ser executado manualmente após a instalação do Ubuntu Server
 cat <<'EOF' > install_home_assistant.sh
 #!/bin/bash
 sudo apt-get update
@@ -60,8 +61,4 @@ sudo systemctl enable home-assistant@$(whoami)
 sudo systemctl start home-assistant@$(whoami)
 EOF
 
-# Copiar script de instalação para VM
-scp install_home_assistant.sh root@$(qm guest exec $VMID --hostname):/root/
-
-# Executar script de instalação dentro da VM
-qm guest exec $VMID -- /bin/bash /root/install_home_assistant.sh
+echo "Script de instalação do Home Assistant criado. Copie-o para a VM e execute-o após a instalação do Ubuntu Server."
