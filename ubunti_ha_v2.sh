@@ -29,13 +29,13 @@ echo -e "\n Loading..."
 # Função para obter a última versão do Ubuntu Server
 get_latest_ubuntu_server_iso() {
     # Baixa a página HTML do site do Ubuntu Server
-    curl -s "https://ubuntu.com/download/server" | pup 'a[href^="/download/server"] attr{href}' > download_links.txt
+    curl -s "https://ubuntu.com/download/server" > ubuntu_server.html
     
     # Extrai o link do botão de download do último link disponível
-    DOWNLOAD_LINK=$(tail -n 1 download_links.txt)
+    DOWNLOAD_LINK=$(grep -o 'https://ubuntu\.com/download/server[^"]*' ubuntu_server.html | tail -n 1)
     
     # Extrai o nome do arquivo ISO do link do botão de download
-    ISO_FILENAME=$(echo "$DOWNLOAD_LINK" | grep -oE 'ubuntu-[0-9]+\.[0-9]+(\.[0-9]+)?-server-amd64\.iso')
+    ISO_FILENAME=$(echo "$DOWNLOAD_LINK" | sed 's#.*/##')
     
     # Verifica se o nome do arquivo ISO foi encontrado
     if [ -z "$ISO_FILENAME" ]; then
@@ -46,8 +46,8 @@ get_latest_ubuntu_server_iso() {
     # Exibe o nome do arquivo ISO
     echo "Nome do arquivo ISO mais recente: $ISO_FILENAME"
     
-    # Remove o arquivo temporário de links de download
-    rm download_links.txt
+    # Remove o arquivo HTML temporário
+    rm ubuntu_server.html
 }
 
 # Chama a função
