@@ -24,14 +24,14 @@ function header_info {
 EOF
 }
 header_info
-echo -e "\n Loading... \n v_005"
+echo -e "\n Loading... \n v_006"
 
 
 # Função para obter a última versão do Ubuntu Server
 get_latest_ubuntu_server_iso() {
     # Baixa a página HTML do site do Ubuntu Server
-    curl -s "https://ubuntu.com/download/server" > ubuntu_server.html
-    
+    curl -s "https://ubuntu.com/download/server" | iconv -f $(file -bi - | sed -e 's/.*[ ]charset=//') -t utf-8 -o ubuntu_server.html
+
     # Exibe o conteúdo do arquivo ubuntu_server.html
     cat ubuntu_server.html
     
