@@ -26,23 +26,14 @@ EOF
 header_info
 echo -e "\n Loading..."
 
-get_latest_ubuntu_iso() {
-    # Baixa a página HTML do site do Ubuntu Server
-    curl -s "https://ubuntu.com/download/server" > ubuntu_server.html
-    
-    # Extrai o link do arquivo ISO mais recente
-    latest_iso=$(grep -oE 'https://releases\.ubuntu\.com/[0-9]+\.[0-9]+/ubuntu-[0-9]+\.[0-9]+(?:\.[0-9]+)?-server-amd64\.iso' ubuntu_server.html | grep -E '.*lts.*' | head -n1)
-    
-    # Extrai apenas o nome do arquivo ISO do link
-    iso_filename=$(basename "$latest_iso")
-    
-    # Exibe o nome do arquivo ISO mais recente
-    echo "O arquivo ISO mais recente do Ubuntu Server é: $iso_filename"
-    
-    # Limpa o arquivo HTML temporário
-    rm ubuntu_server.html
+# Função para obter a última versão do Ubuntu Server
+get_latest_ubuntu_server_iso() {
+    UBUNTU_URL=$(curl -s https://releases.ubuntu.com | grep -oP 'https:\/\/releases.ubuntu.com\/\K[0-9]+(\.[0-9]+)?(?=\/)' | sort -V | tail -n 1)
+    ISO_URL="https://releases.ubuntu.com/$UBUNTU_URL/ubuntu-$UBUNTU_URL-live-server-amd64.iso"
+    echo "Última versão do Ubuntu Server: $UBUNTU_URL"
+    echo "URL do ISO: $ISO_URL"
 }
 
 # Chama a função
-get_latest_ubuntu_iso
+get_latest_ubuntu_server_iso
 
