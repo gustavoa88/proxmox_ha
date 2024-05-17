@@ -24,8 +24,8 @@ function header_info {
 EOF
 }
 header_info
-echo -e "\n Loading..."
-echo -e "\n v_001"
+echo -e "\n Loading... \n v_001"
+
 
 # Função para obter a última versão do Ubuntu Server
 get_latest_ubuntu_server_iso() {
