@@ -28,19 +28,26 @@ echo -e "\n Loading..."
 
 # Função para obter a última versão do Ubuntu Server
 get_latest_ubuntu_server_iso() {
-    # Baixa a página HTML do site do Ubuntu Server e filtra a versão mais recente
-    UBUNTU_URL=$(curl -s https://ubuntu.com/download/server | grep -oP 'https:\/\/releases.ubuntu.com\/\K[0-9]+(\.[0-9]+)?(?=\/)' | sort -V | tail -n 1)
+    # Baixa a página HTML do site do Ubuntu Server
+    curl -s "https://ubuntu.com/download/server" | pup 'a[href^="/download/server"] attr{href}' > download_links.txt
     
-    # Constrói a URL do arquivo ISO
-    ISO_URL="https://releases.ubuntu.com/$UBUNTU_URL/ubuntu-$UBUNTU_URL-live-server-amd64.iso"
+    # Extrai o link do botão de download do último link disponível
+    DOWNLOAD_LINK=$(tail -n 1 download_links.txt)
     
-    # Extrai o nome do arquivo ISO
-    ISO_FILENAME="ubuntu-$UBUNTU_URL-live-server-amd64.iso"
+    # Extrai o nome do arquivo ISO do link do botão de download
+    ISO_FILENAME=$(echo "$DOWNLOAD_LINK" | grep -oE 'ubuntu-[0-9]+\.[0-9]+(\.[0-9]+)?-server-amd64\.iso')
     
-    # Exibe a última versão do Ubuntu Server e o URL do arquivo ISO
-    echo "Última versão do Ubuntu Server: $UBUNTU_URL"
-    echo "Nome do arquivo ISO: $ISO_FILENAME"
-    echo "URL do ISO: $ISO_URL"
+    # Verifica se o nome do arquivo ISO foi encontrado
+    if [ -z "$ISO_FILENAME" ]; then
+        echo "Erro: Não foi possível determinar o nome do arquivo ISO."
+        return 1
+    fi
+    
+    # Exibe o nome do arquivo ISO
+    echo "Nome do arquivo ISO mais recente: $ISO_FILENAME"
+    
+    # Remove o arquivo temporário de links de download
+    rm download_links.txt
 }
 
 # Chama a função
