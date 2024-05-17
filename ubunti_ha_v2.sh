@@ -31,10 +31,10 @@ get_latest_ubuntu_iso() {
     curl -s "https://ubuntu.com/download/server" > ubuntu_server.html
     
     # Extrai o link do arquivo ISO mais recente
-    latest_iso=$(grep -o 'https://releases.ubuntu.com/[0-9]+\.[0-9]+/ubuntu-[0-9]+\.[0-9]+.[0-9]+-server-amd64\.iso' ubuntu_server.html | head -n1)
+    latest_iso=$(grep -oE 'https://releases\.ubuntu\.com/[0-9]+\.[0-9]+/ubuntu-[0-9]+\.[0-9]+(?:\.[0-9]+)?-server-amd64\.iso' ubuntu_server.html | grep -E '.*lts.*' | head -n1)
     
     # Extrai apenas o nome do arquivo ISO do link
-    iso_filename=$(echo "$latest_iso" | awk -F'/' '{print $NF}')
+    iso_filename=$(basename "$latest_iso")
     
     # Exibe o nome do arquivo ISO mais recente
     echo "O arquivo ISO mais recente do Ubuntu Server é: $iso_filename"
@@ -45,3 +45,4 @@ get_latest_ubuntu_iso() {
 
 # Chama a função
 get_latest_ubuntu_iso
+
