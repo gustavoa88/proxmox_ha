@@ -32,11 +32,11 @@ get_latest_ubuntu_server_iso() {
     curl -s "https://ubuntu.com/download/server" > ubuntu_server.html
     
     # Extrai o link do botão de download
-    DOWNLOAD_LINK=$(grep -o 'href="/download/server[^"]*"' ubuntu_server.html | head -n 1 | sed 's/href="//')
+    DOWNLOAD_LINK=$(grep -o 'href="/download/server/thank-you?version=[^"]*' ubuntu_server.html | head -n 1)
     
-    # Verifica se o link foi encontrado
+    # Verifica se o link do botão de download foi encontrado
     if [ -z "$DOWNLOAD_LINK" ]; then
-        echo "Erro: Não foi possível encontrar o link de download."
+        echo "Erro: Não foi possível encontrar o link do botão de download."
         return 1
     fi
     
