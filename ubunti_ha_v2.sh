@@ -31,20 +31,17 @@ get_latest_ubuntu_server_iso() {
     # Baixa a página HTML do site do Ubuntu Server
     curl -s "https://ubuntu.com/download/server" > ubuntu_server.html
     
-    # Extrai o link do botão de download do último link disponível
-    DOWNLOAD_LINK=$(grep -o 'https://ubuntu\.com/download/server[^"]*' ubuntu_server.html | tail -n 1)
+    # Extrai o link do botão de download
+    DOWNLOAD_LINK=$(grep -o 'href="/download/server[^"]*"' ubuntu_server.html | head -n 1 | sed 's/href="//')
     
-    # Extrai o nome do arquivo ISO do link do botão de download
-    ISO_FILENAME=$(echo "$DOWNLOAD_LINK" | sed 's#.*/##')
-    
-    # Verifica se o nome do arquivo ISO foi encontrado
-    if [ -z "$ISO_FILENAME" ]; then
-        echo "Erro: Não foi possível determinar o nome do arquivo ISO."
+    # Verifica se o link foi encontrado
+    if [ -z "$DOWNLOAD_LINK" ]; then
+        echo "Erro: Não foi possível encontrar o link de download."
         return 1
     fi
     
-    # Exibe o nome do arquivo ISO
-    echo "Nome do arquivo ISO mais recente: $ISO_FILENAME"
+    # Exibe o link do botão de download
+    echo "Link do botão de download: $DOWNLOAD_LINK"
     
     # Remove o arquivo HTML temporário
     rm ubuntu_server.html
