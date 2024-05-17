@@ -24,19 +24,31 @@ function header_info {
 EOF
 }
 header_info
-echo -e "\n Loading... \n v_007"
+echo -e "\n Loading... \n v_001"
 
 
 # Função para obter a última versão do Ubuntu Server
 get_latest_ubuntu_server_iso() {
-    # Baixa a página HTML do site do Ubuntu Server
-    wget -q -O - "https://ubuntu.com/download/server" ubuntu_server.html
+  # URL da página de releases do Ubuntu
+  URL="https://releases.ubuntu.com/focal/"
 
-    # Exibe o conteúdo do arquivo ubuntu_server.html
-    cat ubuntu_server.html
-    
-    # Remove o arquivo HTML temporário
-    rm ubuntu_server.html
+  # Padrao para o nome do arquivo ISO que você deseja encontrar
+  ISO_PATTERN="live-server-amd64.iso"
+
+  # Baixa o HTML da página
+  HTML=$(curl -s "$URL")
+
+  # Extrai o link do arquivo ISO usando grep
+  ISO_LINK=$(echo "$HTML" | grep -oP '(?<=href=")[^"]*'"$ISO_PATTERN" | head -n 1)
+
+  # Se o link for encontrado, faça o download
+  if [ -n "$ISO_LINK" ]; then
+    echo "Encontrado o link para o arquivo ISO: $ISO_LINK"
+    echo "Baixando o arquivo ISO..."
+    wget "$URL$ISO_LINK"
+  else
+    echo "O arquivo ISO não foi encontrado."
+  fi
 }
 
 # Chama a função
