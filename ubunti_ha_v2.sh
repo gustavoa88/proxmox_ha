@@ -24,7 +24,7 @@ function header_info {
 EOF
 }
 header_info
-echo -e "\n Loading... \n v_003"
+echo -e "\n Loading... \n v_004"
 
 
 # Função para obter a última versão do Ubuntu Server
@@ -33,7 +33,7 @@ get_latest_ubuntu_server_iso() {
     curl -s "https://ubuntu.com/download/server" > ubuntu_server.html
     
     # Extrai o link que contém 'eventCategory' : 'Server download'
-    DOWNLOAD_LINK=$(grep -o 'eventCategory' : 'Server download' ubuntu_server.html | grep -o 'href="[^"]*' | cut -d '"' -f2)
+    DOWNLOAD_LINK=$(grep -o 'eventCategory.*Server download' ubuntu_server.html | grep -o 'href="[^"]*' | cut -d '"' -f2)
     
     # Verifica se o link do botão de download foi encontrado
     if [ -z "$DOWNLOAD_LINK" ]; then
